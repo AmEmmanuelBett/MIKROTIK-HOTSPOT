@@ -1,0 +1,378 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
+    <link href="./css/materialize.css" rel="stylesheet" type="text/css" />
+    <script src="./js/materialize.js"></script>
+    <title>iNet Africa hotspot login</title>
+    <style type="text/css">
+    body {
+
+        font-size: 10px;
+        font-family: verdana;
+    }
+
+
+    #register,
+    .otpFields {
+        display: flex;
+        align-items: center;
+    }
+
+
+
+    h5 {
+        font-size: 1.4em;
+    }
+
+    .row {
+        width: 95%;
+        margin-bottom: 0px;
+    }
+
+    #logo {
+        height: 22vh;
+    }
+
+    /*textarea,
+    input,
+    select {
+        background-color: #FDFBFB;
+        border: 1px solid #BBBBBB;
+        padding: 2px;
+        margin: 1px;
+        font-size: 14px;
+        color: #808080;
+    }
+
+    a,
+    a:link,
+    a:visited,
+    a:active {
+        color: #AAAAAA;
+        text-decoration: none;
+        font-size: 10px;
+    }
+
+    a:hover {
+        border-bottom: 1px dotted #c1c1c1;
+        color: #AAAAAA;
+    }
+
+    img {
+        border: none;
+    }
+
+    td {
+        font-size: 14px;
+        color: #7A7A7A;
+    }*/
+    </style>
+</head>
+
+<body>
+    $(if chap-id)
+    <form name="sendin" action="$(link-login-only)" method="post">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+    <script type="text/javascript" src="md5.js"></script>
+    <script type="text/javascript">
+    <!--
+    function doLogin() {
+        console.log("do login")
+        document.sendin.username.value = document.login.username.value;
+        document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
+        document.sendin.submit();
+        return false;
+    }
+    //-->
+    </script>
+    $(endif)
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.datepicker');
+        var instances = M.Datepicker.init(elems, options);
+    });
+
+
+    $(document).ready(function() {
+        $('select').formSelect();
+        $('.datepicker').datepicker();
+
+        // Old way
+        // $('select').material_select();
+    });
+
+    function r_false() {
+        console.log("got called")
+        register();
+        $("#register").hide();
+        $("#otp_form").show();
+
+
+        return false;
+    }
+
+    function back() {
+        $("#register").show();
+        $("#otp_form").hide();
+    }
+
+    function register() {
+        /* get some values from elements on the page: */
+        try {
+            var formData = {
+
+                first_name: $("#first_name").val(),
+                last_name: $("#last_name").val(),
+                email: $("#email").val(),
+                area: $("#area").val(),
+                awareness: $("#aware").val(),
+                phone: $("#phone").val(),
+                DoB: $("#dob").val(),
+                current_isp: $("#isp").val()
+            };
+
+            console.log($("#first_name"))
+
+
+            var userdata = {
+                "first_name": formData.first_name,
+                "last_name": formData.last_name,
+                "email": formData.email,
+                "area": formData.area,
+                "phone": formData.phone,
+                "DoB": formData.DoB,
+                "awareness": formData.awareness,
+                "current_isp": formData.current_isp
+            }
+            console.log(userdata);
+            // userdata = {}
+            $.ajax({
+                type: "POST",
+                url: 'http://radius.inet.africa:4000/hotspot/login', //A string containing the URL to which the request is sent.
+                timeout: 2000,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(userdata),
+
+                //The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+
+                success: function(response, status, xhr) {
+                    //show content
+                    console.log('Success!' + response + ', Status: ' + status + ', xhr: ' + xhr)
+                    const text = `${JSON.stringify(response)}`;
+                    const obj = JSON.parse(text);
+                    const dataObj = JSON.parse(JSON.stringify(obj.data))
+
+                    document.getElementById("hash").value = `${dataObj.id}`;
+                    document.getElementById("otp_phone").value = `${dataObj.phone}`;
+                },
+                error: function(jqXHR, textStatus, err) {
+                    //show error message
+                    alert(err)
+                }
+            })
+
+
+
+            return false
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+    </script>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {});
+
+
+    function v_false() {
+        console.log("got called")
+        verify();
+
+        return false;
+    }
+
+    function verify() {
+        /* get some values from elements on the page: */
+        try {
+            var formData = {
+                otp: $("#otp").val(),
+                otp_phone: $("#otp_phone").val(),
+                hash: $("#hash").val(),
+            };
+            console.log(otp);
+            // console.log($("#first_name"))
+
+
+            var userdata = {
+                "otp": formData.otp,
+                "hash": formData.hash,
+                "phone": formData.otp_phone,
+                "user_verified": "true"
+            }
+            console.log(userdata);
+            // userdata = {}
+            $.ajax({
+                type: "POST",
+                url: 'http://radius.inet.africa:4000/hotspot/verify', //A string containing the URL to which the request is sent.
+                timeout: 2000,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(userdata),
+
+                //The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+
+                success: function(response, status, xhr) {
+                    //show content
+                    console.log('Success!' + JSON.stringify(response) + ', Status: ' + status + ', xhr: ' + xhr);
+                    doLogin();
+                },
+                error: function(jqXHR, textStatus, err) {
+                    //show error message
+                    alert(err)
+                }
+            })
+
+
+            return false
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+    </script>
+    <div>
+        <div align="center">
+            <a href="https://inet.africa"> <img id="logo" src="./img/logo_inet.png" id="inet_logo"></a>
+            <h5>PLEASE ENTER YOUR DETAILS BELOW TO REGISTER FOR FREE INTERNET!</h5>
+        </div>
+        <form style="display: none;" ;" name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+            <input type="hidden" name="dst" value="$(link-orig)" />
+            <input type="hidden" name="popup" value="true" />
+            <table width="600" style="background-color: #ffffff">
+                <tr>
+                    <td align="center">Username</td>
+                    <td><input style="width: 200px" name="username" type="text" value="admin" /></td>
+                </tr>
+                <tr>
+                    <td align="center">password</td>
+                    <td><input style="width: 200px" name="password" type="password" value="InetAfrica7" /></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input style="width: 80px;" type="submit" value="Submit" /></td>
+                </tr>
+            </table>
+        </form>
+        <form name="register" id="register" method="post" onSubmit="return r_false();" action="">
+            <input type="hidden" name="dst" value="$(link-orig)" />
+            <input type="hidden" name="popup" value="true" />
+            <div class="row">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="first_name" type="text" class="validate" required>
+                        <label for="first_name">First Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="last_name" type="text" class="validate" required>
+                        <label for="last_name">Last Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="phone" type="tel" class="validate" pattern="^0([1,7](?:(?:[0-9][0-9])|(?:0[0-8])|(4[0-1]))[0-9]{6})$" required>
+                        <label for="phone">Phone</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="email" type="email" class="validate" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,9})+$" required>
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input type="text" id="dob" class="datepicker" required>
+                        <label for="dob">Date of Birth</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select class="" id="area" required>
+                            <option value="" disabled selected>Choose your option</option>
+                            <option value="Sunpark">Sunpark</option>
+                            <option value="Kisumu_Ndogo">Kisumu Ndogo</option>
+                            <option value="Kwachocha">Kwachocha</option>
+                            <option value="Shella">Shella</option>
+                            <option value="Majengo">Majengo</option>
+                            <option value="Alaskan">Alaskan</option>
+                            <option value="Town">Town</option>
+                            <option value="Ngala">Ngala</option>
+                            <option value="Mlangilangi">Mlangilangi</option>
+                            <option value="Barani">Barani</option>
+                            <option value="Maweni">Maweni</option>
+                            <option value="Kijiwetanga">Kijiwe Tanga</option>
+                            <option value="Mtangani">Mtangani</option>
+                            <option value="Kosovo">Kosovo</option>
+                            <option value="Airport">Airport</option>
+                        </select>
+                        <label>Location</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select class="" id="aware" required>
+                            <option value="" disabled selected>Choose your option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <label>Have you heard of iNet Africa?</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="isp" type="text" class="validate" required>
+                        <label for="isp">Current Internet Provider</label>
+                    </div>
+                </div>
+                <div class="row center">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                    </button>
+                </div>
+            </div>
+        </form>
+        <form style="display:none;" name="otp" method="post" id="otp_form" onsubmit="return v_false()">
+            <input type="hidden" name="dst" value="$(link-orig)" />
+            <input type="hidden" name="popup" value="true" />
+            <div class="row otpFields">
+                <div class="input-field col s12">
+                    <input id="otp" type="text" class="validate" required>
+                    <label for="otp">Enter OTP</label>
+                    <input id="otp_phone" type="hidden" class="validate">
+                    <input id="hash" type="hidden" class="validate">
+                    <div class="row center">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        </button>
+                        <button class="btn waves-effect waves-light" name="action" onclick="back()">Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <br />
+    </div>
+    <!-- <script type="text/javascript">
+            < !--
+            document.login.username.focus();
+//-->
+    </script>
+</body>
+
+</html>

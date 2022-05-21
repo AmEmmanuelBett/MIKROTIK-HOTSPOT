@@ -1,0 +1,28 @@
+{
+  "name": "hotspot-backend",
+  "version": "1.0.0",
+  "description": "otp authentication for logged in user",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Emmanuel Kipkemoi Cheruiyot",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-unless": "^1.0.0",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.10",
+    "mongoose-unique-validator": "^3.0.0",
+    "msg91": "^0.0.6",
+    "nodemailer": "^6.7.3",
+    "nodemon": "^2.0.14",
+    "otp-generator": "^3.0.0",
+    "stormdb": "^0.5.2"
+  }
+}
